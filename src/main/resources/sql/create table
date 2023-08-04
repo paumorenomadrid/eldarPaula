@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS public.credit_card
+(
+    id integer NOT NULL,
+    brand "char" NOT NULL,
+    card_number "char" NOT NULL,
+    card_hold "char" NOT NULL,
+    due_date date NOT NULL,
+    CONSTRAINT credit_card_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.credit_card
+    OWNER to postgres;
