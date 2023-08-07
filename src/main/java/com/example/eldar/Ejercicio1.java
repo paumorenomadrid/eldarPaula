@@ -7,8 +7,7 @@ import com.example.eldar.model.CreditCard;
 
 public class Ejercicio1 {
 	
-	public static void main(String[] args) {
-	
+	public void main(){	
 	//Crear 3 objetos de la clase CreditCard
     CreditCard cc1 = new CreditCard("VISA", "154278523654", "Jonh Doe", LocalDate.of(2013, 8, 4));
     CreditCard cc2 = new CreditCard("VISA", "615427852354", "Mary Ann", LocalDate.of(2029, 5, 4));
@@ -32,7 +31,6 @@ public class Ejercicio1 {
     System.out.println(cc1.getInform(500));
     System.out.println(cc2.getInform(800));
     System.out.println(cc3.getInform(900));
-    
 	}
-    
 }
+    
