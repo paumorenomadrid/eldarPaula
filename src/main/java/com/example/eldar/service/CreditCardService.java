@@ -14,20 +14,24 @@ import java.util.Map;
 public class CreditCardService {
 
     public Map<String, String> informService(String brandName, String cardNumber, String cardholder, LocalDate dueDate, float amount) throws DateTimeException {
-        CreditCard aux = new CreditCard(brandName, cardNumber, cardholder, dueDate);
-        float sum = amount * (1 + aux.getRate());
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        String brand = aux.getBrand().getName();
-        String rate = decimalFormat.format(aux.getRate());
-        String total = decimalFormat.format(sum);
-
         Map<String, String> response = new HashMap<>();
+        try {
+            CreditCard aux = new CreditCard(brandName, cardNumber, cardholder, dueDate);
+            float sum = amount * (1 + aux.getRate());
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+            String brand = aux.getBrand().getName();
+            String rate = decimalFormat.format(aux.getRate());
+            String total = decimalFormat.format(sum);
 
-        response.put("marca",brand);
-                response.put("tasa",rate);
-                response.put("importe",total);
+            response.put("marca",brand);
+            response.put("tasa",rate);
+            response.put("importe",total);
 
-                return response;
+            return response;
+        } catch (IllegalArgumentException e){
+            return null;
+        }
+
     }
  @Autowired
     CreditCard creditCard;
