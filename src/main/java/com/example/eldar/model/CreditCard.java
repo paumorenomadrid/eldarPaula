@@ -1,16 +1,16 @@
 package com.example.eldar.model;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
+import javax.persistence.*;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "credit_card")
 public class CreditCard {
@@ -36,7 +36,10 @@ public class CreditCard {
 	@Nonnull
 	private LocalDate dueDate;
 
-	public CreditCard(String brand, String cardNumber, String cardholder, LocalDate dueDate) {
+	public CreditCard() {
+	}
+
+	public CreditCard(String brand, String cardNumber, String cardholder, LocalDate dueDate) throws DateTimeException {
 		super();
 		this.brand = getBrandName(brand);
 		this.cardNumber = cardNumber;
@@ -72,7 +75,7 @@ public class CreditCard {
 		return dueDate;
 	}
 
-	public void setDueDate(LocalDate dueDate) {
+	public void setDueDate(LocalDate dueDate) throws DateTimeException {
 		this.dueDate = dueDate;
 	}
 
@@ -104,7 +107,7 @@ public class CreditCard {
 				int year = today.getYear() - 2000;
 				// el valor month nunca será 0 ni nulo por ser la fecha actual por lo que no
 				// necesita agregar ArithmeticException
-				return year / month;
+				return year / (float) month;
 			case AMEX:
 				return month * 0.1f;
 			case NARA:
@@ -124,11 +127,41 @@ public class CreditCard {
 		if (amount <= 1000.0f) {
 			float sum = amount * (1 + this.getRate());
 			DecimalFormat decimalFormat = new DecimalFormat("#.00");
-			String inform = "Tasa de " + this.getBrand().getName() + ": " + decimalFormat.format(this.getRate()) + "\n"
+			return "Tasa de " + this.getBrand().getName() + ": " + decimalFormat.format(this.getRate()) + "\n"
 					+ "Importe:" + decimalFormat.format(sum);
-			return inform;
 		} else {
 			return "Esta operacion no es válida";
 		}
 	}
+
+	public String isValidInform(){
+		return "La tarjeta " + this.getCardNumber() + "es valida? " + this.isValidCard()+ "\n";
+	}
+
+	public String isEqualInform(CreditCard creditCard){
+		return "La tarjeta " + this.getCardNumber() + "es diferente de" + creditCard.getCardNumber() +  "? " +  this.equals(creditCard)+ "\n";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+
+		CreditCard other = (CreditCard) obj;
+		// Cada tarjeta de crédito que se emite en el mundo tendrá un número único,
+		// lo que permite usar este atributo para compararlas
+		return Objects.equals(cardNumber, other.cardNumber);
+	}
+
+	@Override
+	public String toString() {
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("MM/yy");
+		return "Marca:" + this.brand.getName() + "\n" + "Nro de Tarjeta:" + this.cardNumber + "\n"
+				+ "Nro de Tarjeta:" + this.cardholder + "\n" + "Fecha de Vencimiento:" + dueDate.format(df) + "\n";
+	}
 }
+
